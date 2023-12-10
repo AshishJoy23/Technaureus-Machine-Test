@@ -9,6 +9,8 @@ import 'package:technaureus_machine_test/view/screens/new_order/new_order_screen
 import 'package:technaureus_machine_test/view/screens/new_order/return_order_screen.dart';
 import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
+import '../../main.dart';
+
 class MyAppScreen extends StatefulWidget {
   const MyAppScreen({super.key});
 
@@ -27,16 +29,18 @@ class _MyAppScreenState extends State<MyAppScreen> {
       const NewOrderScreen(),
       const CartScreen(),
       const ReturnOrderScreen(),
-      const CustomersScreen(),
+      MyHomePage(
+        title: '',
+      ),
     ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const CustomAppBar(),
+      extendBody: true,
       body: screens[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
@@ -45,8 +49,8 @@ class _MyAppScreenState extends State<MyAppScreen> {
               selectedIndex = value;
             });
           },
-          elevation: 6.0,
-          backgroundColor: Colors.white,
+          elevation: 10.0,
+          backgroundColor: kSecondaryColor,
           selectedItemColor: kPrimaryColor,
           unselectedItemColor: kPrimaryColor,
           selectedFontSize: 10,
@@ -73,11 +77,34 @@ class _MyAppScreenState extends State<MyAppScreen> {
               label: 'New Order',
             ),
             BottomNavigationBarItem(
+              activeIcon: Stack(
+                children: [
+                  const Center(
+                    child: Icon(
+                      Icons.shopping_cart,
+                    ),
+                  ),
+                  Positioned(
+                    right: 35,
+                    child: CircleAvatar(
+                      radius: 6,
+                      backgroundColor: kPrimaryColor,
+                      child: Text(
+                        '9',
+                        style: kBodySmall!.copyWith(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
               icon: Center(
                 child: Stack(
                   children: [
                     const Icon(
-                      CupertinoIcons.shopping_cart,
+                      Icons.shopping_cart_outlined,
                     ),
                     Positioned(
                       top: 0,
@@ -107,7 +134,7 @@ class _MyAppScreenState extends State<MyAppScreen> {
             ),
             const BottomNavigationBarItem(
               icon: Icon(
-                Icons.groups,
+                Icons.groups_outlined,
               ),
               label: 'Customers',
             ),
@@ -115,4 +142,3 @@ class _MyAppScreenState extends State<MyAppScreen> {
     );
   }
 }
-

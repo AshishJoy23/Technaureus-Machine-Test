@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
+import 'package:technaureus_machine_test/view/screens/screens.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final bool isCustomer;
@@ -50,7 +51,16 @@ class SearchBarWidget extends StatelessWidget {
                             width: size.width * 0.01,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (BuildContext context) {
+                                  return DetailsBottomSheetWidget();
+                                },
+                              );
+                            },
                             child: const Icon(
                               Icons.add_circle,
                               color: kPrimaryColor,

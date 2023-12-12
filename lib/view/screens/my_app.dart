@@ -1,15 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/view/screens/cart/cart_screen.dart';
 import 'package:technaureus_machine_test/view/screens/customers/customers_screen.dart';
 import 'package:technaureus_machine_test/view/screens/home/home_screen.dart';
 import 'package:technaureus_machine_test/view/screens/new_order/new_order_screen.dart';
 import 'package:technaureus_machine_test/view/screens/new_order/return_order_screen.dart';
-import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
-import '../../main.dart';
 
 class MyAppScreen extends StatefulWidget {
   const MyAppScreen({super.key});
@@ -29,16 +25,13 @@ class _MyAppScreenState extends State<MyAppScreen> {
       const NewOrderScreen(),
       const CartScreen(),
       const ReturnOrderScreen(),
-      MyHomePage(
-        title: '',
-      ),
+      CustomersScreen(),
     ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       extendBody: true,
       body: screens[selectedIndex],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 
 ThemeData theme() {
   return ThemeData(

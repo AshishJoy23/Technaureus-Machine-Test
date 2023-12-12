@@ -5,3 +5,7 @@ export 'products/products_screen.dart';
 export 'new_order/new_order_screen.dart';
 export 'my_app.dart';
 export 'home/widgets/grid_card_widget.dart';
+export 'customers/widgets/bottom_sheet.dart';
+export 'customers/widgets/custom_textfield.dart';
+export 'cart/widgets/cart_item_card.dart';
+export 'cart/widgets/cart_amount.dart';

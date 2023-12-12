@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 
 class NewOrderScreen extends StatelessWidget {
   const NewOrderScreen({super.key});

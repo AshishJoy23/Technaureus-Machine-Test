@@ -1,4 +1,4 @@
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 
 final kHeadlineLarge = textTheme().headlineLarge;
 final kHeadlineMedium = textTheme().headlineMedium;

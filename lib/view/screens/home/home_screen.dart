@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:technaureus_machine_test/view/core/core.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/view/screens/new_order/return_order_screen.dart';
 import 'package:technaureus_machine_test/view/screens/screens.dart';
 import 'package:technaureus_machine_test/view/widgets/widgets.dart';
@@ -32,8 +32,8 @@ class HomeScreen extends StatelessWidget {
       'Route',
     ];
     List<Widget> cardRouteList = [
-      const CustomersScreen(),
-      const ProductsScreen(),
+      CustomersScreen(),
+      ProductsScreen(),
       const NewOrderScreen(),
       const ReturnOrderScreen(),
       const MyAppScreen(),
@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.04, vertical: size.width * 0.02),
+                    horizontal: size.width * 0.04, vertical: size.width * 0.05),
                 itemCount: iconDataList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

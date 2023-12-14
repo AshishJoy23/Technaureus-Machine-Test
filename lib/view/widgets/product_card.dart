@@ -1,26 +1,32 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:technaureus_machine_test/controller/cart_controller.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
-import 'package:technaureus_machine_test/core/api_endpoints.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/model/models.dart';
 
 class ProductCardWidget extends StatelessWidget {
   final ProductModel product;
- ProductCardWidget({
+  final int? customerId;
+  ProductCardWidget({
     super.key,
     required this.product,
+    this.customerId,
   });
 
-final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.put(ProductController());
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    // CartModel customerCart = cartController.checkCartExistsOrNot(customerId!);
+
     return InkWell(
-      onTap: () async{
-        var returnProduct = await productController.getOneProduct(product.id) as ProductModel;
+      onTap: () async {
+        var returnProduct =
+            await productController.getOneProduct(product.id) as ProductModel;
         log(returnProduct.toString());
         log(returnProduct.name);
       },
@@ -95,59 +101,102 @@ final ProductController productController = Get.put(ProductController());
                     ),
                   ),
                   Container(
-                    width: size.width * 0.13,
-                    height: size.height * 0.03,
+                    width: size.width * 0.14,
+                    height: size.height * 0.035,
                     decoration: BoxDecoration(
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(5)),
-                    child: Center(
-                      // child: index == 0
-                      // ? Row(
-                      //     mainAxisAlignment:
-                      //         MainAxisAlignment.spaceEvenly,
-                      //     children: [
-                      //       InkWell(
-                      //         onTap: () => log('message-----'),
-                      //         child: const Icon(
-                      //           Icons.remove,
-                      //           color: kSecondaryColor,
-                      //           size: 12,
-                      //         ),
-                      //       ),
-                      //       Text(
-                      //         '10',
-                      //         style: kBodySmall!.copyWith(
-                      //           color: kSecondaryColor,
-                      //         ),
-                      //       ),
-                      //       InkWell(
-                      //         onTap: () => log('message'),
-                      //         child: const Icon(
-                      //           Icons.add,
-                      //           color: kSecondaryColor,
-                      //           size: 12,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   )
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Utils.showSnackBar('Product Added', 'Product added to the cart');
-                            },
-                            child: Text(
-                              'Add',
-                              style: kBodySmall!.copyWith(
-                                color: kSecondaryColor,
+                    child: Obx(() {
+                      var cart = cartController.allCartLists.firstWhere(
+                          (element) => element.customerId == customerId);
+                      
+                      
+                      log('checking bad state');
+                      log(cart.customerId.toString());
+                      log(cart.totalPrice.toString());
+                      log(cart.cartProducts.length.toString());
+                      log(cart.cartProducts[product].toString());
+                      log(cart.cartProducts.values.elementAt(0).toString());
+                      log(cart.cartProducts.keys.elementAt(0).toString());
+                      var sample = cart.cartProducts.keys.elementAt(0);
+                      log(sample.name);
+                      log(cart.cartProducts.containsKey(product).toString());
+                      return cart.cartProducts.containsKey(product)
+                          ? Center(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      if (customerId != null) {
+                                        if (cart.cartProducts[product] == 1) {
+                                          cartController.deleteCartProduct(
+                                              customerId!, product);
+                                        } else {
+                                          cartController.removeProductFromCart(
+                                              customerId!, product);
+                                        }
+                                      }
+                                      Utils.showSnackBar('Product Removed',
+                                          'Product removed from the cart');
+                                    },
+                                    child: const Icon(
+                                      Icons.remove,
+                                      color: kSecondaryColor,
+                                      size: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    cart.cartProducts[product].toString(),
+                                    style: kBodySmall!.copyWith(
+                                      color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      if (customerId != null) {
+                                        cartController.addProductToCart(
+                                            customerId!, product);
+                                      }
+                                      Utils.showSnackBar('Product Added',
+                                          'Product added to the cart');
+                                    },
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: kSecondaryColor,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+                            )
+                          : Center(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      if (customerId != null) {
+                                        cartController.addProductToCart(
+                                            customerId!, product);
+                                      }
+                                      Utils.showSnackBar('Product Added',
+                                          'Product added to the cart');
+                                    },
+                                    child: Text(
+                                      'Add',
+                                      style: kBodySmall!.copyWith(
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                    }),
+                  ),
                 ],
               )
             ],

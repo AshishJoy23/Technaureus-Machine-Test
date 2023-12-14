@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
     List<Widget> cardRouteList = [
       CustomersScreen(),
       ProductsScreen(),
-      const NewOrderScreen(),
+      NewOrderScreen(),
     ];
     var size = MediaQuery.of(context).size;
     return Scaffold(

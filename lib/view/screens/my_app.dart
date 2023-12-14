@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:technaureus_machine_test/controller/cart_controller.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/view/screens/screens.dart';
 
@@ -13,6 +15,7 @@ class MyAppScreen extends StatefulWidget {
 class _MyAppScreenState extends State<MyAppScreen> {
   List screens = [];
   int selectedIndex = 0;
+  final CartController controller = Get.put(CartController());
 
   @override
   void initState() {

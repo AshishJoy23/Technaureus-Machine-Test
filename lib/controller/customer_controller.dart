@@ -9,7 +9,7 @@ class CustomerController extends GetxController {
   var isLoading = true.obs;
   var customersList = <CustomerModel>[].obs;
 //getting all customers
-  getAllCustomers() async {
+  Future<void> getAllCustomers() async {
     try {
       isLoading.value = true;
       var customers = await APIServices().fetchAllCustomers();
@@ -18,7 +18,9 @@ class CustomerController extends GetxController {
       if (customers != null) {
         customersList.value = customers;
         isLoading.value = false;
+        log(customers.length.toString());
       }
+      HiveServices().allCustomersCartCreated();
     } catch (e) {
       isLoading.value = false;
       Utils.showSnackBar('Error', e.toString());
@@ -76,8 +78,8 @@ class CustomerController extends GetxController {
   }
 
   @override
-  void onInit() {
-    getAllCustomers();
+  void onInit() async{
+    await getAllCustomers();
     super.onInit();
   }
 }

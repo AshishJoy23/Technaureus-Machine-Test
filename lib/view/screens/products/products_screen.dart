@@ -1,22 +1,24 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
+import 'package:technaureus_machine_test/model/models.dart';
 import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
 class ProductsScreen extends StatelessWidget {
-  ProductsScreen({super.key});
+  final CustomerModel? customer;
+  ProductsScreen({super.key,this.customer});
 
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.put(ProductController());  
 
   @override
   Widget build(BuildContext context) {
+    bool checkCustomer = customer != null? true: false;
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Products',
+      appBar: CustomAppBar(
+        title: customer!=null ? customer!.name :'Products',
       ),
       body: Obx(() {
         return (productController.isLoading.value)
@@ -54,6 +56,7 @@ class ProductsScreen extends StatelessWidget {
                           log(product.image);
                           return ProductCardWidget(
                             product: product,
+                            customerId: checkCustomer ? customer!.id : null,
                           );
                         },
                       )

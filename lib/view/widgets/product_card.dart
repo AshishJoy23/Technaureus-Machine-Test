@@ -1,6 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/api_endpoints.dart';
 import 'package:technaureus_machine_test/core/core.dart';
@@ -8,12 +8,12 @@ import 'package:technaureus_machine_test/model/models.dart';
 
 class ProductCardWidget extends StatelessWidget {
   final ProductModel product;
-  final ProductController productController;
-  const ProductCardWidget({
+ ProductCardWidget({
     super.key,
     required this.product,
-    required this.productController,
   });
+
+final ProductController productController = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +133,15 @@ class ProductCardWidget extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text(
-                            'Add',
-                            style: kBodySmall!.copyWith(
-                              color: kSecondaryColor,
+                          InkWell(
+                            onTap: () {
+                              Utils.showSnackBar('Product Added', 'Product added to the cart');
+                            },
+                            child: Text(
+                              'Add',
+                              style: kBodySmall!.copyWith(
+                                color: kSecondaryColor,
+                              ),
                             ),
                           ),
                         ],

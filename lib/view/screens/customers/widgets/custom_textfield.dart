@@ -4,11 +4,13 @@ import 'package:technaureus_machine_test/core/core.dart';
 class CustomTextFormField extends StatelessWidget {
   final String labelText;
   final bool isNum;
+  final bool isLast;
   final TextEditingController textController;
   const CustomTextFormField({
     super.key,
     required this.labelText,
-    this.isNum=false,
+    this.isNum = false,
+    this.isLast = false,
     required this.textController,
   });
 
@@ -28,7 +30,11 @@ class CustomTextFormField extends StatelessWidget {
         SizedBox(
           height: size.height * 0.042,
           child: TextFormField(
-            focusNode: FocusNode(),
+            // onFieldSubmitted: (value) {
+            //   textController.text =value;
+            // },
+            textInputAction:
+                isLast ? TextInputAction.done : TextInputAction.next,
             controller: textController,
             cursorColor: Colors.black87,
             style: kBodyMedium!.copyWith(

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:technaureus_machine_test/core/core.dart';
+import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
-class ReturnOrderScreen extends StatelessWidget {
-  const ReturnOrderScreen({super.key});
+class DummyScreen extends StatelessWidget {
+  const DummyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(
+        title: '',
+        isHome: true,
+      ),
       body: Center(
         child: Text(
-          'ReturnOrder',
+          'Dummy Screen',
           style: kHeadlineLarge,
         ),
       ),

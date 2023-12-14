@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:technaureus_machine_test/core/core.dart';
-import 'package:technaureus_machine_test/view/screens/new_order/return_order_screen.dart';
+import 'package:technaureus_machine_test/view/screens/dummy_screen.dart';
 import 'package:technaureus_machine_test/view/screens/screens.dart';
 import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
@@ -35,11 +35,6 @@ class HomeScreen extends StatelessWidget {
       CustomersScreen(),
       ProductsScreen(),
       const NewOrderScreen(),
-      const ReturnOrderScreen(),
-      const MyAppScreen(),
-      const MyAppScreen(),
-      const MyAppScreen(),
-      const MyAppScreen(),
     ];
     var size = MediaQuery.of(context).size;
     return Scaffold(
@@ -68,7 +63,9 @@ class HomeScreen extends StatelessWidget {
                     cardIcon: iconDataList[index],
                     cardTitle: cardTitleList[index],
                     index: index,
-                    onTap: () => Navigator.push(
+                    onTap: index>2
+                    ?(){}
+                    :() => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => cardRouteList[index],

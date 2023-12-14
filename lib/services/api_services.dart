@@ -73,13 +73,43 @@ class APIServices {
   }
 
   Future<CustomerModel?> createCustomer(CustomerModel customer) async {
-    var response =
-        await http.post(Uri.parse(kCustomersUrl), body: customer.toJson());
+    try {
+      var response =
+        await http.post(Uri.parse(kCustomersUrl), body: json.encode(customer.toJson()));
     log(response.statusCode.toString());
     if (response.statusCode == 200) {
       var body = await json.decode(response.body);
       CustomerModel updatedCustomer = CustomerModel.fromJson(body['data']);
       return updatedCustomer;
+    } else {
+      return null;
+    }
+    } catch (e) {
+      log('services log');
+      log(e.toString());
+    }
+    return null;
+  }
+
+  Future<List<ProductModel>?> fetchSearchedProducts(String query) async {
+    var response = await http.get(Uri.parse("$kSearchProductUrl$query"));
+    if (response.statusCode == 200) {
+      var body = await json.decode(response.body);
+      List<ProductModel> products = List.from(
+          body['data'].map((product) => ProductModel.fromJson(product)));
+      return products;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<CustomerModel>?> fetchSearchedCustomers(String query) async {
+    var response = await http.get(Uri.parse("$kSearchCustomerUrl$query"));
+    if (response.statusCode == 200) {
+      var body = await json.decode(response.body);
+      List<CustomerModel> customers = List.from(
+          body['data'].map((customer) => CustomerModel.fromJson(customer)));
+      return customers;
     } else {
       return null;
     }

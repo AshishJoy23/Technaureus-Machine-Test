@@ -70,6 +70,7 @@ class CustomerController extends GetxController {
       }
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
+      log('controller log');
       log(e.toString());
     }
   }

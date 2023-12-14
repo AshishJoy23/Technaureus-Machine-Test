@@ -1,4 +1,3 @@
-import 'package:technaureus_machine_test/core/api_endpoints.dart';
 
 class CustomerModel {
   final int? id;

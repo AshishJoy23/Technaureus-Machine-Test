@@ -1,24 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
-import 'package:technaureus_machine_test/core/api_endpoints.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/model/models.dart';
 
 class CustomerCardWidget extends StatelessWidget {
   final CustomerModel customer;
-  final CustomerController customerController;
   const CustomerCardWidget({
     super.key,
     required this.customer,
-    required this.customerController,
   });
 
   @override
   Widget build(BuildContext context) {
+    final SearchController searchController = Get.put(SearchController());
     var size = MediaQuery.of(context).size;
     return Material(
       elevation: 4.0,

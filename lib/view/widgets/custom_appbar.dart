@@ -5,10 +5,12 @@ import 'package:technaureus_machine_test/core/core.dart';
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
   final bool isHome;
+  final double heightFactor;
   const CustomAppBar({
     super.key,
     required this.title,
     this.isHome = false,
+    this.heightFactor = 50,
   });
 
   @override
@@ -50,6 +52,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     );
   }
 
+
+
   @override
-  Size get preferredSize => const Size.fromHeight(50.0);
+  Size get preferredSize => Size.fromHeight(heightFactor);
 }

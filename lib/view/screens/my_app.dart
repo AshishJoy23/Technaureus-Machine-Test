@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:technaureus_machine_test/core/core.dart';
-import 'package:technaureus_machine_test/view/screens/cart/cart_screen.dart';
-import 'package:technaureus_machine_test/view/screens/customers/customers_screen.dart';
-import 'package:technaureus_machine_test/view/screens/home/home_screen.dart';
-import 'package:technaureus_machine_test/view/screens/new_order/new_order_screen.dart';
-import 'package:technaureus_machine_test/view/screens/new_order/return_order_screen.dart';
+import 'package:technaureus_machine_test/view/screens/screens.dart';
 
 
 class MyAppScreen extends StatefulWidget {
@@ -22,10 +18,10 @@ class _MyAppScreenState extends State<MyAppScreen> {
   void initState() {
     screens = [
       const HomeScreen(),
-      const NewOrderScreen(),
+      const DummyScreen(),
       const CartScreen(),
-      const ReturnOrderScreen(),
-      CustomersScreen(),
+      const DummyScreen(),
+      const DummyScreen(),
     ];
     super.initState();
   }

@@ -14,7 +14,7 @@ class CartScreen extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: const CustomAppBar(
-        title: 'My Cart',
+        title: 'Your Cart',
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -33,7 +33,9 @@ class ProductsScreen extends StatelessWidget {
                       vertical: size.width * 0.02),
                   child: Column(
                     children: [
-                      const SearchBarWidget(),
+                      CustomSearchBarWidget(
+                        isProduct: true,
+                      ),
                       SizedBox(
                         height: size.height * 0.01,
                       ),
@@ -52,7 +54,6 @@ class ProductsScreen extends StatelessWidget {
                           log(product.image);
                           return ProductCardWidget(
                             product: product,
-                            productController: productController,
                           );
                         },
                       )

@@ -14,4 +14,36 @@ class Utils {
       borderRadius: 6.0,
     );
   }
+
+  static showAlertBox(String title, String message, VoidCallback onPressed) {
+    Get.defaultDialog(
+      backgroundColor: kSecondaryColor,
+        title: title,
+        content: Text(
+          message,
+          style: kBodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text('Cancel',style: kBodyMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),),
+          ),
+          ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll<Color>(kPrimaryColor)),
+              onPressed: onPressed,
+              child: Text(
+                'Okay',
+                style: kBodyMedium!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ))
+        ]);
+  }
 }

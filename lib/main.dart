@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:technaureus_machine_test/blocs/cart/cart_bloc.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/model/cart/cart_model.dart';
 import 'package:technaureus_machine_test/model/product/product_model.dart';
+import 'package:technaureus_machine_test/services/hive_db_services.dart';
 import 'package:technaureus_machine_test/view/screens/my_app.dart';
 
 void main() async {
@@ -21,11 +24,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Technaureus Machine Test',
-      debugShowCheckedModeBanner: false,
-      theme: theme(),
-      home: const MyAppScreen(),
+    return BlocProvider(
+      create: (context) => CartBloc(cartServices: HiveServices())
+        ..add(const AllCustomersCartCreated())
+        ..add(const AllCustomersCartLoaded()),
+      child: GetMaterialApp(
+        title: 'Technaureus Machine Test',
+        debugShowCheckedModeBanner: false,
+        theme: theme(),
+        home: MyAppScreen(),
+      ),
     );
   }
 }

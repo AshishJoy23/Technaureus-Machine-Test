@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -26,7 +27,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             )
           : InkWell(
               onTap: () {
-                Navigator.pop(context);
+                Get.back();
               },
               child: const Icon(
                 Icons.arrow_back_ios_new,

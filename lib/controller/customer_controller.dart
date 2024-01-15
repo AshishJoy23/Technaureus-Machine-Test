@@ -50,11 +50,13 @@ class CustomerController extends GetxController {
   editCustomer(int id,CustomerModel customer) async {
     log('<<<<<<<<edit customer comtrol>>>>>>>>');
     try {
-      var editedCustomer = await APIServices().modifyCustomerDetails(id, customer);
-      if (editedCustomer != null) {
-        int index = customersList.indexWhere((element) => element.id == customer.id);
-        customersList[index] = editedCustomer;
-        log(editedCustomer.name);
+      var responseCustomer = await APIServices().modifyCustomerDetails(id, customer);
+      if (responseCustomer != null) {
+        var editedCustomer = customersList.firstWhere((element) => element.id == responseCustomer.id);
+        int index = customersList.indexWhere((element) => element.id == editedCustomer.id);
+        customersList[index] = responseCustomer;
+        log(responseCustomer.name);
+        Utils.showSnackBar('Edited', 'Successfully updated the customer.');
       }
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
@@ -69,6 +71,7 @@ class CustomerController extends GetxController {
       var newCustomer = await APIServices().createCustomer(customer);
       if (newCustomer != null) {
         customersList.insert(0, newCustomer);
+        Utils.showSnackBar('Created', 'New customer is created.');
       }
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());

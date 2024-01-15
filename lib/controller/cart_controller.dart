@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
+import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/model/models.dart';
 import 'package:technaureus_machine_test/services/services.dart';
@@ -10,107 +11,128 @@ class CartController extends GetxController {
   var eachCartList =
       CartModel(customerId: 0, totalPrice: 0, cartProducts: {}).obs;
 
+  final ProductController productController = Get.put(ProductController());
+
   createAllCustomersCart() async {
     await HiveServices().allCustomersCartCreated();
   }
 
-  getAllCartLists() async{
+  getAllCartLists() async {
     try {
       var carts = await HiveServices().fetchAllCartLists();
-      log('<<<<<<<<<<<<<<<<<<<<<<fetched cart>>>>>>>>>>>>>>>>>>>>>>');
-      log(carts.length.toString());
+
       allCartLists.value = carts;
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
-      log(e.toString());
     }
   }
 
-  // Future<void> chooseEachCustomerCart(int customerId) async {
-  //   eachCartList.value = allCartLists.firstWhere(
-  //     (element) => element.customerId == customerId,
-  //   );
-  //   log('<<<<<<<<<<<<choosing>>>>>>>>>>>>');
-  //   log(eachCartList.value.customerId.toString());
-  // }
-
-  addProductToCart(int customerId, ProductModel product) async {
+  addProductToCart(int customerId, int productId) async {
     try {
-      var cart = allCartLists.firstWhere((element) => element.customerId == customerId );
       int customerIndex =
-          allCartLists.indexWhere((element) => element == cart);
-      cart.cartProducts.update(
-        product,
+          allCartLists.indexWhere((element) => element == eachCartList.value);
+      eachCartList.value.cartProducts.update(
+        productId,
         (quantity) => quantity + 1,
         ifAbsent: () => 1,
       );
-      log('<<<<<<<<<<<<adding one pdt>>>>>>>>=>>>>');
-      log(cart.customerId.toString());
-      cart.totalPrice =
-          cart.cartProducts.entries.fold(0, (total, entry) {
-        ProductModel product = entry.key;
+
+      eachCartList.value.totalPrice =
+          eachCartList.value.cartProducts.entries.fold(0, (total, entry) {
+        int id = entry.key;
         int quantity = entry.value;
+        ProductModel product = productController.productsList
+            .firstWhere((element) => element.id == id);
         return total + (product.price * quantity);
       });
-      allCartLists[customerIndex] = cart;
+      allCartLists[customerIndex] = eachCartList.value;
       await HiveServices()
-          .updateCustomerCart(customerIndex, cart);
-      log('<<<<<<<<<<<<checking total>>>>>>>>>>>>');
-      log(cart.totalPrice.toString());
-      log('product added successfully');
+          .updateCustomerCart(customerIndex, eachCartList.value);
+      allCartLists.clear();
+      allCartLists.value = await HiveServices().fetchAllCartLists();
+      eachCartList.value = allCartLists[customerIndex];
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
-      log(e.toString());
     }
   }
-  removeProductFromCart(int customerId, ProductModel product) async {
+
+  removeProductFromCart(int customerId, int productId) async {
     try {
-      var cart = allCartLists.firstWhere((element) => element.customerId == customerId );
       int customerIndex =
-          allCartLists.indexWhere((element) => element == cart);
-      cart.cartProducts.update(
-        product,
+          allCartLists.indexWhere((element) => element == eachCartList.value);
+      eachCartList.value.cartProducts.update(
+        productId,
         (quantity) => quantity - 1,
       );
-      log('<<<<<<<<<<<<removing one pdt>>>>>>>>=>>>>');
-      log(cart.customerId.toString());
-      cart.totalPrice =
-          cart.cartProducts.entries.fold(0, (total, entry) {
-        ProductModel product = entry.key;
+
+      eachCartList.value.totalPrice =
+          eachCartList.value.cartProducts.entries.fold(0, (total, entry) {
+        int id = entry.key;
         int quantity = entry.value;
+        ProductModel product = productController.productsList
+            .firstWhere((element) => element.id == id);
         return total + (product.price * quantity);
       });
-      allCartLists[customerIndex] = cart;
+      allCartLists[customerIndex] = eachCartList.value;
       await HiveServices()
-          .updateCustomerCart(customerIndex, cart);
-      log('<<<<<<<<<<<<checking total>>>>>>>>>>>>');
-      log(cart.totalPrice.toString());
-      log('product removed successfully');
+          .updateCustomerCart(customerIndex, eachCartList.value);
+      allCartLists.clear();
+      allCartLists.value = await HiveServices().fetchAllCartLists();
+      eachCartList.value = allCartLists[customerIndex];
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
-      log(e.toString());
     }
   }
-  deleteCartProduct(int customerId, ProductModel product) async {
+
+  deleteCartProduct(int customerId, int productId) async {
     try {
-      var cart = allCartLists.firstWhere((element) => element.customerId == customerId );
       int customerIndex =
-          allCartLists.indexWhere((element) => element == cart);
-      cart.cartProducts.remove(product);
-      log('<<<<<<<<<<<<removing one pdt>>>>>>>>=>>>>');
-      log(cart.customerId.toString());
-      cart.totalPrice =
-          cart.cartProducts.entries.fold(0, (total, entry) {
-        ProductModel product = entry.key;
+          allCartLists.indexWhere((element) => element == eachCartList.value);
+      eachCartList.value.cartProducts.remove(productId);
+
+      eachCartList.value.totalPrice =
+          eachCartList.value.cartProducts.entries.fold(0, (total, entry) {
+        int id = entry.key;
         int quantity = entry.value;
+        ProductModel product = productController.productsList
+            .firstWhere((element) => element.id == id);
+
         return total + (product.price * quantity);
       });
-      allCartLists[customerIndex] = cart;
+      allCartLists[customerIndex] = eachCartList.value;
       await HiveServices()
-          .updateCustomerCart(customerIndex, cart);
-      log('<<<<<<<<<<<<checking total>>>>>>>>>>>>');
-      log(cart.totalPrice.toString());
-      log('product removed successfully');
+          .updateCustomerCart(customerIndex, eachCartList.value);
+      allCartLists.clear();
+      allCartLists.value = await HiveServices().fetchAllCartLists();
+    } catch (e) {
+      Utils.showSnackBar('Error', e.toString());
+    }
+  }
+
+  confirmOrder(CartModel cart) async {
+    List<OrderProduct> orderProducts = [];
+    try {
+      for (var element in cart.cartProducts.entries) {
+        ProductModel product = productController.productsList
+            .firstWhere((e) => e.id == element.key);
+        OrderProduct orderProduct = OrderProduct(
+            productId: product.id,
+            quantity: element.value,
+            price: product.price);
+        orderProducts.add(orderProduct);
+      }
+      OrderModel newOrder = OrderModel(
+          customerId: cart.customerId,
+          totalPrice: cart.totalPrice,
+          products: orderProducts);
+      await APIServices().confirmYourOrder(newOrder);
+      int customerIndex = allCartLists.indexWhere((element) => element == cart);
+      eachCartList.value = CartModel(
+          customerId: cart.customerId, totalPrice: 0, cartProducts: {});
+      allCartLists[customerIndex] = eachCartList.value;
+      await HiveServices()
+          .updateCustomerCart(customerIndex, eachCartList.value);
+          Utils.showSnackBar('Confirmed', 'Order has beenm placed successfully!');
     } catch (e) {
       Utils.showSnackBar('Error', e.toString());
       log(e.toString());

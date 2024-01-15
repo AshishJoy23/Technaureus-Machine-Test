@@ -59,4 +59,5 @@ class HiveServices {
       log(e.toString());
     }
   }
+
 }

@@ -19,7 +19,7 @@ class CartModelAdapter extends TypeAdapter<CartModel> {
     return CartModel(
       customerId: fields[0] as int,
       totalPrice: fields[1] as int,
-      cartProducts: (fields[2] as Map).cast<ProductModel, int>(),
+      cartProducts: (fields[2] as Map).cast<int, int>(),
     );
   }
 

@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:technaureus_machine_test/blocs/cart/cart_bloc.dart';
 import 'package:technaureus_machine_test/controller/cart_controller.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
@@ -9,10 +11,12 @@ import 'package:technaureus_machine_test/model/models.dart';
 class ProductCardWidget extends StatelessWidget {
   final ProductModel product;
   final int? customerId;
+  final int? index;
   ProductCardWidget({
     super.key,
     required this.product,
     this.customerId,
+    this.index,
   });
 
   final ProductController productController = Get.put(ProductController());
@@ -21,14 +25,21 @@ class ProductCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    // CartModel customerCart = cartController.checkCartExistsOrNot(customerId!);
 
     return InkWell(
       onTap: () async {
-        var returnProduct =
-            await productController.getOneProduct(product.id) as ProductModel;
+        ProductModel? returnProduct =
+            await productController.getOneProduct(product.id);
         log(returnProduct.toString());
-        log(returnProduct.name);
+        log(returnProduct!.name);
+        log(returnProduct.id.toString());
+        if (customerId != null) {
+          log('<<<********enteered>>>');
+          log(cartController.eachCartList.value.cartProducts
+              .containsKey(product.id)
+              .toString());
+          ;
+        }
       },
       child: Material(
         elevation: 4.0,
@@ -100,103 +111,274 @@ class ProductCardWidget extends StatelessWidget {
                       color: Colors.black38,
                     ),
                   ),
-                  Container(
-                    width: size.width * 0.14,
-                    height: size.height * 0.035,
-                    decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Obx(() {
-                      var cart = cartController.allCartLists.firstWhere(
-                          (element) => element.customerId == customerId);
-                      
-                      
-                      log('checking bad state');
-                      log(cart.customerId.toString());
-                      log(cart.totalPrice.toString());
-                      log(cart.cartProducts.length.toString());
-                      log(cart.cartProducts[product].toString());
-                      log(cart.cartProducts.values.elementAt(0).toString());
-                      log(cart.cartProducts.keys.elementAt(0).toString());
-                      var sample = cart.cartProducts.keys.elementAt(0);
-                      log(sample.name);
-                      log(cart.cartProducts.containsKey(product).toString());
-                      return cart.cartProducts.containsKey(product)
-                          ? Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      if (customerId != null) {
-                                        if (cart.cartProducts[product] == 1) {
-                                          cartController.deleteCartProduct(
-                                              customerId!, product);
-                                        } else {
-                                          cartController.removeProductFromCart(
-                                              customerId!, product);
-                                        }
-                                      }
-                                      Utils.showSnackBar('Product Removed',
-                                          'Product removed from the cart');
-                                    },
-                                    child: const Icon(
-                                      Icons.remove,
-                                      color: kSecondaryColor,
-                                      size: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    cart.cartProducts[product].toString(),
+                  customerId != null
+                      ? BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            if (state is CartLoaded) {
+                              return Container(
+                                width: size.width * 0.14,
+                                height: size.height * 0.035,
+                                decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: state.cart.cartProducts
+                                        .containsKey(product.id)
+                                    // child: cartController.eachCartList.value.cartProducts
+                                    //         .containsKey(product.id)
+                                    ? Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                if (customerId != null) {
+                                                  if (state.cart.cartProducts[
+                                                          product.id] ==
+                                                      1) {
+                                                    BlocProvider.of<CartBloc>(
+                                                            context)
+                                                        .add(CartProductDeleted(
+                                                            productId:
+                                                                product.id));
+                                                    // cartController.deleteCartProduct(
+                                                    //     customerId!, product.id);
+                                                  } else {
+                                                    BlocProvider.of<CartBloc>(
+                                                            context)
+                                                        .add(CartProductRemoved(
+                                                            productId:
+                                                                product.id));
+                                                  }
+                                                  // if (cartController
+                                                  //         .eachCartList
+                                                  //         .value
+                                                  //         .cartProducts[product.id] ==
+                                                  //     1) {
+                                                  //   cartController.deleteCartProduct(
+                                                  //       customerId!, product.id);
+                                                  // } else {
+                                                  //   cartController
+                                                  //       .removeProductFromCart(
+                                                  //           customerId!, product.id);
+                                                  // }
+                                                  Utils.showSnackBar(
+                                                      'Product Removed',
+                                                      'Product removed from the cart');
+                                                }
+                                              },
+                                              child: const Icon(
+                                                Icons.remove,
+                                                color: kSecondaryColor,
+                                                size: 14,
+                                              ),
+                                            ),
+                                            Text(
+                                              state
+                                                  .cart.cartProducts[product.id]
+                                                  .toString(),
+                                              style: kBodySmall!.copyWith(
+                                                color: kSecondaryColor,
+                                              ),
+                                            ),
+                                            // Obx(
+                                            //   () => Text(
+
+                                            //     cartController.eachCartList.value
+                                            //         .cartProducts[product.id]
+                                            //         .toString(),
+                                            //     style: kBodySmall!.copyWith(
+                                            //       color: kSecondaryColor,
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (customerId != null) {
+                                                  BlocProvider.of<CartBloc>(
+                                                          context)
+                                                      .add(CartProductAdded(
+                                                          productId:
+                                                              product.id));
+                                                  // cartController.addProductToCart(
+                                                  //     customerId!, product.id);
+                                                  Utils.showSnackBar(
+                                                      'Product Added',
+                                                      'Product added to the cart');
+                                                }
+                                              },
+                                              child: const Icon(
+                                                Icons.add,
+                                                color: kSecondaryColor,
+                                                size: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                if (customerId != null) {
+                                                  BlocProvider.of<CartBloc>(
+                                                          context)
+                                                      .add(CartProductAdded(
+                                                          productId:
+                                                              product.id));
+                                                  // cartController.addProductToCart(
+                                                  //     customerId!, product.id);
+                                                  Utils.showSnackBar(
+                                                      'Product Added',
+                                                      'Product added to the cart');
+                                                }
+                                              },
+                                              child: Text(
+                                                'Add',
+                                                style: kBodySmall!.copyWith(
+                                                  color: kSecondaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                              );
+                            } else {
+                              return const Icon(
+                                Icons.error,
+                                size: 36,
+                                color: Colors.red,
+                              );
+                            }
+                          },
+                        )
+                      : Container(
+                          width: size.width * 0.14,
+                          height: size.height * 0.035,
+                          decoration: BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    if (customerId != null) {
+                                      BlocProvider.of<CartBloc>(context).add(
+                                          CartProductAdded(
+                                              productId: product.id));
+                                      // cartController.addProductToCart(
+                                      //     customerId!, product.id);
+                                      Utils.showSnackBar('Product Added',
+                                          'Product added to the cart');
+                                    }
+                                  },
+                                  child: Text(
+                                    'Add',
                                     style: kBodySmall!.copyWith(
                                       color: kSecondaryColor,
                                     ),
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      if (customerId != null) {
-                                        cartController.addProductToCart(
-                                            customerId!, product);
-                                      }
-                                      Utils.showSnackBar('Product Added',
-                                          'Product added to the cart');
-                                    },
-                                    child: const Icon(
-                                      Icons.add,
-                                      color: kSecondaryColor,
-                                      size: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      if (customerId != null) {
-                                        cartController.addProductToCart(
-                                            customerId!, product);
-                                      }
-                                      Utils.showSnackBar('Product Added',
-                                          'Product added to the cart');
-                                    },
-                                    child: Text(
-                                      'Add',
-                                      style: kBodySmall!.copyWith(
-                                        color: kSecondaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                    }),
-                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  // Obx(
+                  //   () => Container(
+                  //     width: size.width * 0.14,
+                  //     height: size.height * 0.035,
+                  //     decoration: BoxDecoration(
+                  //         color: kPrimaryColor,
+                  //         borderRadius: BorderRadius.circular(5)),
+                  //     child: cartController.eachCartList.value.cartProducts
+                  //             .containsKey(product.id)
+                  //         ? Center(
+                  //             child: Row(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceEvenly,
+                  //               children: [
+                  //                 InkWell(
+                  //                   onTap: () {
+                  //                     if (customerId != null) {
+                  //                       if (cartController.eachCartList.value
+                  //                               .cartProducts[product.id] ==
+                  //                           1) {
+                  //                         cartController.deleteCartProduct(
+                  //                             customerId!, product.id);
+                  //                       } else {
+                  //                         cartController.removeProductFromCart(
+                  //                             customerId!, product.id);
+                  //                       }
+                  //                     }
+                  //                     Utils.showSnackBar('Product Removed',
+                  //                         'Product removed from the cart');
+                  //                   },
+                  //                   child: const Icon(
+                  //                     Icons.remove,
+                  //                     color: kSecondaryColor,
+                  //                     size: 14,
+                  //                   ),
+                  //                 ),
+                  //                 Obx(
+                  //                   () => Text(
+                  //                     cartController.eachCartList.value
+                  //                         .cartProducts[product.id]
+                  //                         .toString(),
+                  //                     style: kBodySmall!.copyWith(
+                  //                       color: kSecondaryColor,
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //                 InkWell(
+                  //                   onTap: () {
+                  //                     if (customerId != null) {
+                  //                       cartController.addProductToCart(
+                  //                           customerId!, product.id);
+                  //                     }
+                  //                     Utils.showSnackBar('Product Added',
+                  //                         'Product added to the cart');
+                  //                   },
+                  //                   child: const Icon(
+                  //                     Icons.add,
+                  //                     color: kSecondaryColor,
+                  //                     size: 14,
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           )
+                  //         : Center(
+                  //             child: Row(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceEvenly,
+                  //               children: [
+                  //                 InkWell(
+                  //                   onTap: () {
+                  //                     if (customerId != null) {
+                  //                       cartController.addProductToCart(
+                  //                           customerId!, product.id);
+                  //                     }
+                  //                     Utils.showSnackBar('Product Added',
+                  //                         'Product added to the cart');
+                  //                   },
+                  //                   child: Text(
+                  //                     'Add',
+                  //                     style: kBodySmall!.copyWith(
+                  //                       color: kSecondaryColor,
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //   ),
+                  // ),
                 ],
               )
             ],

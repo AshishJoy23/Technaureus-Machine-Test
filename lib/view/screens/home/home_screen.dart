@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:technaureus_machine_test/core/core.dart';
-import 'package:technaureus_machine_test/view/screens/dummy_screen.dart';
+import 'package:get/get.dart';
+import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/view/screens/screens.dart';
 import 'package:technaureus_machine_test/view/widgets/widgets.dart';
 
@@ -11,6 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppController controller = Get.put(AppController());
     List<IconData> iconDataList = [
       Icons.groups,
       CupertinoIcons.cube_box,
@@ -60,18 +61,22 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   return HomeGridCardWidget(
-                    cardIcon: iconDataList[index],
-                    cardTitle: cardTitleList[index],
-                    index: index,
-                    onTap: index>2
-                    ?(){}
-                    :() => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => cardRouteList[index],
-                      ),
-                    ),
-                  );
+                      cardIcon: iconDataList[index],
+                      cardTitle: cardTitleList[index],
+                      index: index,
+                      onTap: index > 2
+                          ? () {
+                            controller.selectedGridIndex.value = index;
+                          }
+                          : () {
+                              controller.selectedGridIndex.value = index;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => cardRouteList[index],
+                                ),
+                              );
+                            });
                 },
               )
             ],

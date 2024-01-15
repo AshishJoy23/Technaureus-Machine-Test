@@ -36,73 +36,84 @@ class CustomersScreen extends StatelessWidget {
                   strokeWidth: 3.0,
                 ),
               )
-            : SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.04,
-                      vertical: size.width * 0.02),
-                  child: Column(
-                    children: [
-                      CustomSearchBarWidget(
-                        isCustomer: true,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.01,
-                      ),
-                      ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: customerController.customersList.length,
-                        itemBuilder: (context, index) {
-                          var customer =
-                              customerController.customersList[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: size.width * 0.02),
-                            child: InkWell(
-                              onTap: () {
-                                nameController.text = customer.name;
-                                mobileController.text = customer.mobileNumber;
-                                emailController.text = customer.email;
-                                streetController.text = customer.street;
-                                street2Controller.text = customer.streetTwo;
-                                cityController.text = customer.city;
-                                pinController.text =
-                                    customer.pincode.toString();
-                                countryController.text = customer.country;
-                                stateController.text = customer.state;
-                                editCustomerBottomSheet(context,customer);
-                              },
-                              child: CustomerCardWidget(
-                                customer: customer,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
+            : customerController.customersList.isEmpty
+                ? const Center(
+                  child: CustomAnimation(
+                    animationUrl: 'assets/animation/no_data.json',
+                    message: 'Data Not Found!!!',
                   ),
-                ),
-              ),
+                )
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.04,
+                          vertical: size.width * 0.02),
+                      child: Column(
+                        children: [
+                          CustomSearchBarWidget(
+                            isCustomer: true,
+                          ),
+                          SizedBox(
+                            height: size.height * 0.01,
+                          ),
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: customerController.customersList.length,
+                            itemBuilder: (context, index) {
+                              var customer =
+                                  customerController.customersList[index];
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: size.width * 0.02),
+                                child: InkWell(
+                                  onTap: () {
+                                    nameController.text = customer.name;
+                                    mobileController.text =
+                                        customer.mobileNumber;
+                                    emailController.text = customer.email;
+                                    streetController.text = customer.street;
+                                    street2Controller.text = customer.streetTwo;
+                                    cityController.text = customer.city;
+                                    pinController.text =
+                                        customer.pincode.toString();
+                                    countryController.text = customer.country;
+                                    stateController.text = customer.state;
+                                    editCustomerBottomSheet(context, customer);
+                                  },
+                                  child: CustomerCardWidget(
+                                    customer: customer,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
       ),
+      bottomSheet: const CustomBottomNavWidget(),
     );
   }
 
-  Future<dynamic> editCustomerBottomSheet(BuildContext context,CustomerModel customer) {
+  Future<dynamic> editCustomerBottomSheet(
+      BuildContext context, CustomerModel customer) {
     var size = MediaQuery.of(context).size;
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(size.width * 0.1),)
-      ),
+          borderRadius: BorderRadius.vertical(
+        top: Radius.circular(size.width * 0.1),
+      )),
       backgroundColor: kSecondaryColor,
       builder: (context) {
         return Padding(
           padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.04,
-          vertical: size.height * 0.02,
-        ),
+            horizontal: size.width * 0.04,
+            vertical: size.height * 0.02,
+          ),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -120,8 +131,8 @@ class CustomersScreen extends StatelessWidget {
                           width: size.width * 0.08,
                           decoration: BoxDecoration(
                               color: kPrimaryColor.withOpacity(0.2),
-                              borderRadius:
-                                  BorderRadius.circular((size.width * 0.1) / 2)),
+                              borderRadius: BorderRadius.circular(
+                                  (size.width * 0.1) / 2)),
                           child: const Icon(Icons.clear)),
                     )
                   ],
@@ -260,7 +271,8 @@ class CustomersScreen extends StatelessWidget {
                       country: countryController.text.trim(),
                       state: stateController.text.trim(),
                     );
-                    customerController.editCustomer(customer.id!,updatedCustomer);
+                    customerController.editCustomer(
+                        customer.id!, updatedCustomer);
                     Navigator.pop(context);
                   },
                   child: Text(

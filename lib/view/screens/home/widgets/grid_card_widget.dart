@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 
 class HomeGridCardWidget extends StatelessWidget {
@@ -16,40 +18,43 @@ class HomeGridCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppController controller = Get.put(AppController());
     var size = MediaQuery.of(context).size;
-    return InkWell(
-      onTap: onTap,
-      child: Material(
-        elevation: 4.0,
-        borderRadius: BorderRadius.circular(size.width * 0.05),
-        child: Container(
-          padding: EdgeInsets.all(size.width * 0.02),
-          width: size.width * 0.45,
-          height: size.height * 0.1,
-          decoration: BoxDecoration(
-            color: index == 1 ? kPrimaryColor : kSecondaryColor,
-            borderRadius: BorderRadius.circular(size.width * 0.05),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                cardIcon,
-                size: 40,
-                color: index == 1 ? kSecondaryColor : kPrimaryColor,
-              ),
-              SizedBox(
-                height: size.height * 0.015,
-              ),
-              Text(
-                cardTitle,
-                style: kTitleMedium!.copyWith(
-                  color: index == 1 ? kSecondaryColor : Colors.black,
-                  fontSize: 15,
+    return Obx(
+      ()=> InkWell(
+        onTap: onTap,
+        child: Material(
+          elevation: 4.0,
+          borderRadius: BorderRadius.circular(size.width * 0.05),
+          child: Container(
+            padding: EdgeInsets.all(size.width * 0.02),
+            width: size.width * 0.45,
+            height: size.height * 0.1,
+            decoration: BoxDecoration(
+              color: index == controller.selectedGridIndex.value ? kPrimaryColor : kSecondaryColor,
+              borderRadius: BorderRadius.circular(size.width * 0.05),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  cardIcon,
+                  size: 40,
+                  color: index == controller.selectedGridIndex.value ? kSecondaryColor : kPrimaryColor,
                 ),
-              )
-            ],
+                SizedBox(
+                  height: size.height * 0.015,
+                ),
+                Text(
+                  cardTitle,
+                  style: kTitleMedium!.copyWith(
+                    color: index == controller.selectedGridIndex.value ? kSecondaryColor : Colors.black,
+                    fontSize: 15,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:technaureus_machine_test/blocs/cart/cart_bloc.dart';
 import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/view/screens/screens.dart';
@@ -27,44 +31,70 @@ class NewOrderScreen extends StatelessWidget {
                   strokeWidth: 3.0,
                 ),
               )
-            : SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.04,
-                      vertical: size.width * 0.02),
-                  child: Column(
-                    children: [
-                      CustomSearchBarWidget(),
-                      SizedBox(
-                        height: size.height * 0.01,
+            : customerController.customersList.isEmpty
+                ? const Center(
+                    child: CustomAnimation(
+                      animationUrl: 'assets/animation/no_data.json',
+                      message: 'Data Not Found!!!',
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.04,
+                          vertical: size.width * 0.02),
+                      child: Column(
+                        children: [
+                          CustomSearchBarWidget(),
+                          SizedBox(
+                            height: size.height * 0.01,
+                          ),
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: customerController.customersList.length,
+                            itemBuilder: (context, index) {
+                              var customer =
+                                  customerController.customersList[index];
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: size.width * 0.02),
+                                child: InkWell(
+                                  onTap: () {
+                                    BlocProvider.of<CartBloc>(context).add(
+                                      EachCustomerCartLoaded(
+                                          customerId: customer.id!),
+                                    );
+                                    // cartController.eachCartList.value =
+                                    //     cartController.allCartLists.firstWhere(
+                                    //         (element) =>
+                                    //             element.customerId ==
+                                    //             customer.id);
+                                    // log(cartController
+                                    //     .eachCartList.value.customerId
+                                    //     .toString());
+                                    log('<<<<<<finded>>>>>>');
+                                    Get.to(
+                                      () => ProductsScreen(
+                                        customer: customer,
+                                      ),
+                                    );
+                                    log('<<<<<<<<<<<<<moved to next>>>>>>>>>>>>>');
+                                  },
+                                  child: CustomerCardWidget(
+                                    customer: customer,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        ],
                       ),
-                      ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: customerController.customersList.length,
-                        itemBuilder: (context, index) {
-                          var customer =
-                              customerController.customersList[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: size.width * 0.02),
-                            child: InkWell(
-                              onTap: () async {
-                                Get.to(ProductsScreen(
-                                  customer: customer,
-                                ));
-                              },
-                              child: CustomerCardWidget(
-                                customer: customer,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              ),
+      ),
+      bottomSheet: const CustomBottomNavWidget(
+        customerId: null,
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:technaureus_machine_test/core/api_endpoints.dart';
+import 'package:technaureus_machine_test/core/core.dart';
 import 'package:technaureus_machine_test/model/models.dart';
 
 class APIServices {
@@ -54,10 +55,13 @@ class APIServices {
 
   Future<CustomerModel?> modifyCustomerDetails(
       int id, CustomerModel customer) async {
-        log(customer.name);
+    log(customer.name);
     try {
       var response = await http.put(Uri.parse("$kCustomerUrl$id"),
-          body: jsonEncode(customer.toJson()));
+          headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(customer.toJson()),);
       log(response.statusCode.toString());
       if (response.statusCode == 200) {
         var body = await json.decode(response.body);
@@ -74,16 +78,21 @@ class APIServices {
 
   Future<CustomerModel?> createCustomer(CustomerModel customer) async {
     try {
-      var response =
-        await http.post(Uri.parse(kCustomersUrl), body: json.encode(customer.toJson()));
-    log(response.statusCode.toString());
-    if (response.statusCode == 200) {
-      var body = await json.decode(response.body);
-      CustomerModel updatedCustomer = CustomerModel.fromJson(body['data']);
-      return updatedCustomer;
-    } else {
-      return null;
-    }
+      var response = await http.post(
+        Uri.parse(kCustomersUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(customer.toJson()),
+      );
+      log(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        var body = await json.decode(response.body);
+        CustomerModel updatedCustomer = CustomerModel.fromJson(body['data']);
+        return updatedCustomer;
+      } else {
+        return null;
+      }
     } catch (e) {
       log('services log');
       log(e.toString());
@@ -112,6 +121,27 @@ class APIServices {
       return customers;
     } else {
       return null;
+    }
+  }
+
+  Future<void> confirmYourOrder(OrderModel order) async {
+    log(order.toJson().toString());
+    log(json.encode(order.toJson()));
+    try {
+      var response = await http.post(
+        Uri.parse(kOrdersUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(order.toJson()),
+      );
+      if (response.statusCode == 200) {
+        log('POST request successful: ${response.body}');
+      } else {
+        log('Failed to send POST request. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('Error sending POST request: $e');
     }
   }
 }

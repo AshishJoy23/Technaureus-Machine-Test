@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:technaureus_machine_test/blocs/cart/cart_bloc.dart';
+import 'package:technaureus_machine_test/controller/controllers.dart';
 import 'package:technaureus_machine_test/core/core.dart';
+import 'package:technaureus_machine_test/view/screens/new_order/order_confirm.dart';
 
 class CartAmountWidget extends StatelessWidget {
-  const CartAmountWidget({
+  CartAmountWidget({
     super.key,
   });
+
+  // final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +35,33 @@ class CartAmountWidget extends StatelessWidget {
               Text(
                 'Subtotal',
                 style: kBodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Colors.black87),
               ),
-              Text(
-                '\$400.00',
-                style: kBodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartLoaded) {
+                    return Text(
+                      '\$${state.cart.totalPrice}.00',
+                      style: kBodyMedium!.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.black87),
+                    );
+                  } else {
+                    return const Icon(
+                      Icons.error,
+                      size: 36,
+                      color: Colors.red,
+                    );
+                  }
+                },
               ),
+              // Obx(
+              //   ()=> Text(
+              //     '\$${cartController.eachCartList.value.totalPrice}.00',
+              //     style: kBodyMedium!.copyWith(
+              //         fontWeight: FontWeight.bold,
+              //         color: Colors.black87),
+              //   ),
+              // ),
             ],
           ),
           SizedBox(
@@ -48,14 +73,12 @@ class CartAmountWidget extends StatelessWidget {
               Text(
                 'Tax',
                 style: kBodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Colors.black87),
               ),
               Text(
-                '\$40.00',
+                '\$50.00',
                 style: kBodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Colors.black87),
               ),
             ],
           ),
@@ -74,77 +97,111 @@ class CartAmountWidget extends StatelessWidget {
               Text(
                 'Total',
                 style: kTitleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Colors.black87),
               ),
-              Text(
-                '\$440.00',
-                style: kTitleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartLoaded) {
+                    return Text(
+                      '\$${state.cart.totalPrice + 50}.00',
+                      style: kTitleLarge!.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.black87),
+                    );
+                  } else {
+                    return const Icon(
+                      Icons.error,
+                      size: 36,
+                      color: Colors.red,
+                    );
+                  }
+                },
               ),
+              // Obx(
+              //   () => Text(
+              //     '\$${cartController.eachCartList.value.totalPrice + 50}.00',
+              //     style: kTitleLarge!.copyWith(
+              //         fontWeight: FontWeight.bold, color: Colors.black87),
+              //   ),
+              // ),
             ],
           ),
           const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    padding:
-                        MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                            EdgeInsets.symmetric(
-                                horizontal: size.height * 0.02)),
-                    backgroundColor:
-                        const MaterialStatePropertyAll<Color>(
-                      kPrimaryColor,
-                    ),
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          size.height * 0.03,
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) { 
+              if (state is CartLoaded) {
+                return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                                  EdgeInsets.symmetric(horizontal: size.height * 0.02)),
+                              backgroundColor: const MaterialStatePropertyAll<Color>(
+                                kPrimaryColor,
+                              ),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    size.height * 0.03,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onPressed: () async {
+                              BlocProvider.of<CartBloc>(context).add(OrderConfirmed(cart: state.cart));
+                              // await cartController
+                              //     .confirmOrder(cartController.eachCartList.value);
+                              Get.to(() => const OrderConfirmScreen());
+                            },
+                            child: Text(
+                              'Order',
+                              style: kBodyMedium!.copyWith(color: Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Order',
-                    style: kBodyMedium!.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(width: size.width * 0.03,),
-              Expanded(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    padding:
-                        MaterialStatePropertyAll<EdgeInsetsGeometry>(
-                            EdgeInsets.symmetric(
-                                horizontal: size.height * 0.02)),
-                    backgroundColor:
-                        const MaterialStatePropertyAll<Color>(
-                      kPrimaryColor,
-                    ),
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          size.height * 0.03,
+                        SizedBox(
+                          width: size.width * 0.03,
                         ),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Order & Deliver',
-                    style: kBodyMedium!.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              padding: MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                                  EdgeInsets.symmetric(horizontal: size.height * 0.02)),
+                              backgroundColor: const MaterialStatePropertyAll<Color>(
+                                kPrimaryColor,
+                              ),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    size.height * 0.03,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onPressed: () async {
+                              BlocProvider.of<CartBloc>(context).add(OrderConfirmed(cart: state.cart));
+                              // await cartController
+                              //     .confirmOrder(cartController.eachCartList.value);
+                              Get.to(() => const OrderConfirmScreen());
+                            },
+                            child: Text(
+                              'Order & Deliver',
+                              style: kBodyMedium!.copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+              } else {
+                return const Icon(
+                      Icons.error,
+                      size: 36,
+                      color: Colors.red,
+                    );
+              }
+              
+            },
           ),
         ],
       ),
